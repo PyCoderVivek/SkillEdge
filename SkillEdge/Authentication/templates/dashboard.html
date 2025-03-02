@@ -1,0 +1,127 @@
+{% extends "base.html" %}
+
+{% block title %}Dashboard{% endblock %}
+
+{% block extra_css %}
+<style>
+    .dashboard-section {
+        padding: 2rem;
+        margin-bottom: 2rem;
+        background-color: #f9f9f9;
+        border-radius: 10px;
+        box-shadow: 0 4px 6px rgba(0, 0, 0, 0.1);
+    }
+    .dashboard-section h2 {
+        font-size: 1.5rem;
+        color: #4a90e2;
+    }
+    .quick-actions button {
+        background-color: #4a90e2;
+        color: #fff;
+        padding: 0.5rem 1rem;
+        border: none;
+        border-radius: 5px;
+        cursor: pointer;
+    }
+    .quick-actions button:hover {
+        background-color: #3c7dc0;
+    }
+    .recommendations-list {
+        list-style: none;
+        padding: 0;
+    }
+    .recommendations-list li {
+        margin-bottom: 1rem;
+        padding: 1rem;
+        background-color: #ffffff;
+        border: 1px solid #e1e5e9;
+        border-radius: 5px;
+    }
+</style>
+{% endblock %}
+
+{% block content %}
+<div class="container">
+    <h1 class="greeting">Welcome back, <i><b>{{ user.username }}</b></i>!</h1>
+
+    <!-- Performance Overview -->
+    <section class="dashboard-section">
+        <h2>Performance Overview</h2>
+        {% if semester_data %}
+        <div id="performanceChartContainer">
+            <canvas id="performanceOverviewChart"></canvas>
+        </div>
+        {% else %}
+        <p>No performance data available. Start by adding a semester.</p>
+        {% endif %}
+    </section>
+
+    <!-- Recommendations -->
+    <section class="dashboard-section">
+        <h2>Your Recommendations</h2>
+        {% if recommendations %}
+        <ul class="recommendations-list">
+            {% for recommendation in recommendations %}
+            <li>
+                <strong>{{ recommendation.subject_name }}</strong><br>
+                Marks: {{ recommendation.marks }} / {{ recommendation.max_marks }}<br>
+                Suggestion: {{ recommendation.suggestion }}
+            </li>
+            {% endfor %}
+        </ul>
+        {% else %}
+        <p>No recommendations available at the moment.</p>
+        {% endif %}
+    </section>
+
+    <!-- Quick Actions -->
+    <section class="dashboard-section quick-actions">
+        <h2>Quick Actions</h2>
+        <button onclick="location.href='{% url 'manage_performance' %}'">Add Semester</button>
+        <button onclick="location.href='{% url 'performance' %}'">View Performance</button>
+        <button onclick="location.href='{% url 'profile_edit' %}'">Edit Profile</button>
+    </section>
+</div>
+{% endblock %}
+
+{% block extra_js %}
+<script>
+    const semesterData = {{ semester_data|safe }};
+
+    function initPerformanceChart() {
+        const ctx = document.getElementById('performanceOverviewChart').getContext('2d');
+        new Chart(ctx, {
+            type: 'line',
+            data: {
+                labels: semesterData.map(data => data.semester_name),
+                datasets: [{
+                    label: 'Average Marks (%)',
+                    data: semesterData.map(data => data.avg_marks),
+                    backgroundColor: 'rgba(74, 144, 226, 0.2)',
+                    borderColor: '#4a90e2',
+                    borderWidth: 2
+                }]
+            },
+            options: {
+                responsive: true,
+                maintainAspectRatio: false,
+                scales: {
+                    y: {
+                        beginAtZero: true,
+                        max: 100,
+                        ticks: {
+                            stepSize: 10
+                        }
+                    }
+                }
+            }
+        });
+    }
+
+    document.addEventListener('DOMContentLoaded', function() {
+        if (semesterData.length > 0) {
+            initPerformanceChart();
+        }
+    });
+</script>
+{% endblock %}

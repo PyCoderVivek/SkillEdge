@@ -1,0 +1,25 @@
+<!-- recommendation/templates/recommendation/recommendations.html -->
+
+{% extends "base.html" %}
+
+{% block title %}AI Recommendations{% endblock %}
+
+{% block content %}
+    <div class="container">
+        <h2>Your Personalized Recommendations</h2>
+
+        {% if recommendations %}
+            <ul class="list-group">
+                {% for recommendation in recommendations %}
+                    <li class="list-group-item">
+                        <strong>{{ recommendation.subject_name }}</strong><br>
+                        Marks: {{ recommendation.marks }} / {{ recommendation.max_marks }}<br>
+                        Suggestion: {{ recommendation.suggestion }}
+                    </li>
+                {% endfor %}
+            </ul>
+        {% else %}
+            <p>No recommendations available.</p>
+        {% endif %}
+    </div>
+{% endblock %}

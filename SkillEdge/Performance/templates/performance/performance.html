@@ -1,0 +1,253 @@
+{% extends 'base.html' %}
+
+{% block title %}Performance Dashboard{% endblock %}
+
+{% block extra_css %}
+<style>
+    :root {
+        --bg-color: #f0f4f8;
+        --text-color: #333;
+        --chart-bg: #ffffff;
+        --chart-border: #e1e5e9;
+        --primary-color: #4a90e2;
+        --secondary-color: #50c878;
+        --accent-color: #ff6b6b;
+        --gradient: linear-gradient(135deg, #4a90e2, #50c878);
+    }
+
+    body, html {
+        margin: 0;
+        padding: 0;
+        height: 100%;
+        font-family: Arial, sans-serif;
+        background-color: var(--bg-color);
+        color: var(--text-color);
+    }
+
+    body.dark-mode {
+        --bg-color: #1a1a2e;
+        --text-color: #e0e0e0;
+        --chart-bg: #16213e;
+        --chart-border: #0f3460;
+        --primary-color: #4361ee;
+        --secondary-color: #3cc47c;
+        --accent-color: #e94560;
+        --gradient: linear-gradient(135deg, #4361ee, #3cc47c);
+    }
+
+    .container {
+        max-width: 1200px;
+        margin: 0 auto;
+        padding: 2rem;
+    }
+
+    .chart-controls {
+        display: flex;
+        justify-content: space-between;
+        margin-bottom: 2rem;
+    }
+
+    select, input[type="checkbox"] {
+        padding: 0.5rem;
+        border: 1px solid var(--chart-border);
+        border-radius: 4px;
+        background-color: var(--chart-bg);
+        color: var(--text-color);
+    }
+
+    .chart-container {
+        background-color: var(--chart-bg);
+        border: 1px solid var(--chart-border);
+        border-radius: 8px;
+        padding: 1rem;
+        margin-bottom: 2rem;
+        box-shadow: 0 4px 8px rgba(0, 0, 0, 0.1);
+        width: 100%;
+        max-width: 600px;
+        height: 400px;
+        overflow: hidden;
+        margin: 0 auto;
+    }
+
+    h2, h3 {
+        color: var(--primary-color);
+        margin-top: 0;
+        text-align: center;
+    }
+
+    canvas {
+        width: 100% !important;
+        height: 100% !important;
+    }
+
+    #semesterChartsContainer {
+        display: grid;
+        grid-template-columns: repeat(auto-fill, minmax(300px, 1fr));
+        gap: 1.5rem;
+    }
+
+    .insights {
+        background: var(--gradient);
+        padding: 1rem;
+        border-radius: 8px;
+        color: white;
+        margin-bottom: 2rem;
+        text-align: center;
+        box-shadow: 0 4px 8px rgba(0, 0, 0, 0.1);
+    }
+</style>
+{% endblock %}
+
+{% block greeting %}Performance Dashboard{% endblock %}
+
+{% block content %}
+<div class="container">
+    <section class="chart-controls">
+        <div class="chart-selector">
+            <label for="chartType">Chart Type:</label>
+            <select id="chartType" onchange="updateChartType()">
+                <option value="bar">Bar Chart</option>
+                <option value="line">Line Chart</option>
+                <option value="radar">Radar Chart</option>
+                <option value="pie">Pie Chart</option>
+            </select>
+        </div>
+        <div class="theme-toggle">
+            <label for="themeSwitch">Dark Mode</label>
+            <input type="checkbox" id="themeSwitch" onchange="toggleTheme()">
+        </div>
+    </section>
+
+    <div class="insights">
+        <h3>Key Insights</h3>
+        <p>Highest Average: <span id="highestAvg"></span>%</p>
+        <p>Lowest Average: <span id="lowestAvg"></span>%</p>
+        <p>Overall Performance: <span id="overallPerformance"></span>%</p>
+    </div>
+
+    <section class="chart-container">
+        <h2>Semester-Wise Average Marks</h2>
+        <canvas id="semesterChart"></canvas>
+    </section>
+
+    <section id="semesterChartsContainer" class="semester-charts">
+        <h2>Subject-Wise Performance</h2>
+    </section>
+</div>
+
+<h2>Performance Dashboard</h2>
+{% for semester in semester_data %}
+    <div>
+        <h3>{{ semester.semester_name }}</h3>
+        <p>Average Marks: {{ semester.avg_marks }}%</p>
+    </div>
+{% endfor %}
+
+{% if predicted_avg %}
+    <h3>Predicted Next Semester Average: {{ predicted_avg|floatformat:2 }}%</h3>
+{% else %}
+    <p>Not enough data to predict next semester's performance.</p>
+{% endif %}
+{% endblock %}
+
+{% block extra_js %}
+<script>
+    const semesterData = {{ semester_data|safe }};
+    let chartType = 'bar';
+    let charts = [];
+
+    function createChart(ctx, labels, data, label, type = chartType) {
+        return new Chart(ctx, {
+            type: type,
+            data: {
+                labels: labels,
+                datasets: [{
+                    label: label,
+                    data: data,
+                    backgroundColor: 'rgba(80, 200, 120, 0.8)',
+                    borderColor: 'rgba(80, 200, 120, 1)',
+                    borderWidth: 2,
+                    hoverBackgroundColor: 'rgba(255, 107, 107, 0.8)',
+                }]
+            },
+            options: {
+                responsive: true,
+                maintainAspectRatio: false,
+                plugins: {
+                    tooltip: {
+                        callbacks: {
+                            label: function(tooltipItem) {
+                                return `${tooltipItem.label}: ${tooltipItem.raw}%`;
+                            }
+                        }
+                    }
+                },
+                scales: {
+                    y: {
+                        beginAtZero: true,
+                        min: 0,
+                        max: 100,
+                        ticks: { stepSize: 10 }
+                    }
+                }
+            }
+        });
+    }
+
+    function initCharts() {
+        const semesterChartCtx = document.getElementById('semesterChart').getContext('2d');
+        charts.push(createChart(
+            semesterChartCtx,
+            semesterData.map(data => data.semester_name),
+            semesterData.map(data => data.avg_marks),
+            'Average Marks (%)'
+        ));
+
+        const semesterChartsContainer = document.getElementById('semesterChartsContainer');
+        semesterData.forEach((semester, index) => {
+            const chartDiv = document.createElement('div');
+            chartDiv.className = 'chart-container';
+            chartDiv.innerHTML = `<h3>${semester.semester_name}</h3><canvas id="semesterChart${index}"></canvas>`;
+            semesterChartsContainer.appendChild(chartDiv);
+
+            const ctx = document.getElementById(`semesterChart${index}`).getContext('2d');
+            charts.push(createChart(
+                ctx,
+                semester.subjects.map(subj => subj.name),
+                semester.subjects.map(subj => subj.marks),
+                'Marks',
+                'pie'
+            ));
+        });
+
+        showInsights();
+    }
+
+    function updateChartType() {
+        chartType = document.getElementById('chartType').value;
+        charts.forEach(chart => {
+            chart.config.type = chartType;
+            chart.update();
+        });
+    }
+
+    function toggleTheme() {
+        document.body.classList.toggle('dark-mode');
+        charts.forEach(chart => chart.update());
+    }
+
+    function showInsights() {
+        const avgMarks = semesterData.map(data => data.avg_marks);
+        const highestAvg = Math.max(...avgMarks);
+        const lowestAvg = Math.min(...avgMarks);
+        const overallPerformance = (avgMarks.reduce((a, b) => a + b, 0) / avgMarks.length).toFixed(2);
+
+        document.getElementById('highestAvg').textContent = highestAvg;
+        document.getElementById('lowestAvg').textContent = lowestAvg;
+        document.getElementById('overallPerformance').textContent = overallPerformance;
+    }
+
+    document.addEventListener('DOMContentLoaded', initCharts);
+</script>
+{% endblock %}
+

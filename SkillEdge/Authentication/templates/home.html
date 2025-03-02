@@ -1,0 +1,370 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>SkillEdge - AI-Driven Student Performance Analysis</title>
+    <link href="https://fonts.googleapis.com/css2?family=Poppins:wght@300;400;600;700&display=swap" rel="stylesheet">
+    <style>
+        * {
+            margin: 0;
+            padding: 0;
+            box-sizing: border-box;
+        }
+        body {
+            font-family: 'Poppins', sans-serif;
+            line-height: 1.6;
+            color: #333;
+        }
+        .container {
+            max-width: 1200px;
+            margin: 0 auto;
+            padding: 0 20px;
+        }
+        header {
+            background-color: #fff;
+            box-shadow: 0 2px 5px rgba(0,0,0,0.1);
+            position: fixed;
+            width: 100%;
+            z-index: 1000;
+        }
+        nav {
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            padding: 20px 0;
+        }
+        .logo {
+            font-size: 24px;
+            font-weight: 700;
+            color: #4a4a4a;
+        }
+        .nav-links {
+            display: flex;
+            gap: 20px;
+        }
+        .nav-links a {
+            text-decoration: none;
+            color: #4a4a4a;
+            font-weight: 600;
+            transition: color 0.3s ease;
+        }
+        .nav-links a:hover {
+            color: #667eea;
+        }
+        .hero {
+            background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
+            color: #fff;
+            padding: 100px 0 50px;
+            text-align: center;
+        }
+        .hero h1 {
+            font-size: 48px;
+            margin-bottom: 20px;
+        }
+        .hero p {
+            font-size: 18px;
+            max-width: 600px;
+            margin: 0 auto 30px;
+        }
+        .cta-button {
+            display: inline-block;
+            background-color: #fff;
+            color: #667eea;
+            padding: 12px 24px;
+            border-radius: 30px;
+            text-decoration: none;
+            font-weight: 600;
+            transition: all 0.3s ease;
+        }
+        .cta-button:hover {
+            transform: translateY(-3px);
+            box-shadow: 0 4px 6px rgba(0,0,0,0.1);
+        }
+        .features {
+            padding: 80px 0;
+            background-color: #f9f9f9;
+        }
+        .features h2 {
+            text-align: center;
+            font-size: 36px;
+            margin-bottom: 50px;
+        }
+        .feature-grid {
+            display: grid;
+            grid-template-columns: repeat(auto-fit, minmax(250px, 1fr));
+            gap: 30px;
+        }
+        .feature-item {
+            background-color: #fff;
+            padding: 30px;
+            border-radius: 10px;
+            box-shadow: 0 4px 6px rgba(0,0,0,0.1);
+            transition: all 0.3s ease;
+        }
+        .feature-item:hover {
+            transform: translateY(-5px);
+            box-shadow: 0 6px 8px rgba(0,0,0,0.15);
+        }
+        .feature-item h3 {
+            font-size: 24px;
+            margin-bottom: 15px;
+            color: #4a4a4a;
+        }
+        .feature-item p {
+            color: #666;
+        }
+        .how-it-works {
+            padding: 80px 0;
+        }
+        .how-it-works h2 {
+            text-align: center;
+            font-size: 36px;
+            margin-bottom: 50px;
+        }
+        .steps {
+            display: flex;
+            justify-content: space-between;
+            max-width: 800px;
+            margin: 0 auto;
+        }
+        .step {
+            text-align: center;
+            max-width: 200px;
+        }
+        .step-number {
+            display: inline-block;
+            width: 40px;
+            height: 40px;
+            background-color: #667eea;
+            color: #fff;
+            border-radius: 50%;
+            font-size: 24px;
+            line-height: 40px;
+            margin-bottom: 15px;
+        }
+        .testimonials {
+            background-color: #f9f9f9;
+            padding: 80px 0;
+        }
+        .testimonials h2 {
+            text-align: center;
+            font-size: 36px;
+            margin-bottom: 50px;
+        }
+        .testimonial-grid {
+            display: grid;
+            grid-template-columns: repeat(auto-fit, minmax(300px, 1fr));
+            gap: 30px;
+        }
+        .testimonial-item {
+            background-color: #fff;
+            padding: 30px;
+            border-radius: 10px;
+            box-shadow: 0 4px 6px rgba(0,0,0,0.1);
+        }
+        .testimonial-item p {
+            font-style: italic;
+            margin-bottom: 15px;
+        }
+        .testimonial-author {
+            font-weight: 600;
+            color: #4a4a4a;
+        }
+        .cta {
+            background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
+            color: #fff;
+            padding: 80px 0;
+            text-align: center;
+        }
+        .cta h2 {
+            font-size: 36px;
+            margin-bottom: 20px;
+        }
+        .cta p {
+            font-size: 18px;
+            max-width: 600px;
+            margin: 0 auto 30px;
+        }
+        footer {
+            background-color: #333;
+            color: #fff;
+            padding: 40px 0;
+            text-align: center;
+        }
+        .footer-links {
+            display: flex;
+            justify-content: center;
+            gap: 20px;
+            margin-bottom: 20px;
+        }
+        .footer-links a {
+            color: #fff;
+            text-decoration: none;
+        }
+        @media (max-width: 768px) {
+            .hero h1 {
+                font-size: 36px;
+            }
+            .steps {
+                flex-direction: column;
+                align-items: center;
+            }
+            .step {
+                margin-bottom: 30px;
+            }
+        }
+    </style>
+</head>
+<body>
+    <header>
+        <nav class="container">
+            <div class="logo">SkillEdge</div>
+            <div class="nav-links">
+                <a href="#features">Features</a>
+                <a href="#how-it-works">How It Works</a>
+                <a href="#testimonials">Testimonials</a>
+                <a href={% url "Signup" %} class="cta-button">Sign Up</a>
+            </div>
+        </nav>
+    </header>
+
+    <section class="hero">
+        <div class="container">
+            <h1>Unlock Your Academic Potential with AI</h1>
+            <p>SkillEdge analyzes your performance, provides personalized recommendations, and guides your career path.</p>
+            <a href={% url "Signup" %} class="cta-button">Get Started</a>
+        </div>
+    </section>
+
+    <section id="features" class="features">
+        <div class="container">
+            <h2>Key Features</h2>
+            <div class="feature-grid">
+                <div class="feature-item">
+                    <h3>Performance Analysis</h3>
+                    <p>Analyze semester-wise subject marks to identify patterns, strengths, and areas for improvement.</p>
+                </div>
+                <div class="feature-item">
+                    <h3>AI-Driven Recommendations</h3>
+                    <p>Receive personalized study materials and resources based on your interests and performance.</p>
+                </div>
+                <div class="feature-item">
+                    <h3>Interactive Visualizations</h3>
+                    <p>View your performance data through interactive charts and graphs for better insights.</p>
+                </div>
+                <div class="feature-item">
+                    <h3>Progress Tracking</h3>
+                    <p>Track your academic journey and see how you've improved over time.</p>
+                </div>
+                <div class="feature-item">
+                    <h3>Community Guidance</h3>
+                    <p>Ask questions and receive guidance from AI or peers in our community section.</p>
+                </div>
+                <div class="feature-item">
+                    <h3>Career Guidance</h3>
+                    <p>Get personalized career recommendations based on your interests and performance.</p>
+                </div>
+            </div>
+        </div>
+    </section>
+
+    <section id="how-it-works" class="how-it-works">
+        <div class="container">
+            <h2>How It Works</h2>
+            <div class="steps">
+                <div class="step">
+                    <div class="step-number">1</div>
+                    <h3>Sign Up</h3>
+                    <p>Create your account and log in to SkillEdge.</p>
+                </div>
+                <div class="step">
+                    <div class="step-number">2</div>
+                    <h3>Input Data</h3>
+                    <p>Enter your semester marks and select your fields of interest.</p>
+                </div>
+                <div class="step">
+                    <div class="step-number">3</div>
+                    <h3>Get Insights</h3>
+                    <p>View your performance analysis and AI recommendations.</p>
+                </div>
+                <div class="step">
+                    <div class="step-number">4</div>
+                    <h3>Track Progress</h3>
+                    <p>Monitor your improvement and adjust your goals as needed.</p>
+                </div>
+            </div>
+        </div>
+    </section>
+
+    <section id="testimonials" class="testimonials">
+        <div class="container">
+            <h2>What Our Users Say</h2>
+            <div class="testimonial-grid">
+                <div class="testimonial-item">
+                    <p>"SkillEdge helped me identify my strengths and improve my weak areas. The AI recommendations were spot-on!"</p>
+                    <div class="testimonial-author">- Sarah K., Computer Science Student</div>
+                </div>
+                <div class="testimonial-item">
+                    <p>"The performance visualizations made it easy for me to track my progress. I've seen a significant improvement in my grades."</p>
+                    <div class="testimonial-author">- Mike T., Engineering Student</div>
+                </div>
+                <div class="testimonial-item">
+                    <p>"The career guidance feature gave me clarity on which path to pursue. It's like having a personal career counselor!"</p>
+                    <div class="testimonial-author">- Emily R., Business Student</div>
+                </div>
+            </div>
+        </div>
+    </section>
+
+    <section class="cta">
+        <div class="container">
+            <h2>Ready to Boost Your Academic Performance?</h2>
+            <p>Join SkillEdge today and start your journey towards academic excellence and career success.</p>
+            <a href={% url "Signup" %} class="cta-button">Sign Up Now</a>
+        </div>
+    </section>
+
+    <footer>
+        <div class="container">
+            <div class="footer-links">
+                <a href="#">About Us</a>
+                <a href="#">Privacy Policy</a>
+                <a href="#">Terms of Service</a>
+                <a href="#">Contact</a>
+            </div>
+            <p>&copy; 2023 SkillEdge. All rights reserved.</p>
+        </div>
+    </footer>
+
+    <script>
+        // Smooth scrolling for anchor links
+        document.querySelectorAll('a[href^="#"]').forEach(anchor => {
+            anchor.addEventListener('click', function (e) {
+                e.preventDefault();
+                document.querySelector(this.getAttribute('href')).scrollIntoView({
+                    behavior: 'smooth'
+                });
+            });
+        });
+
+        // Simple animation for feature items
+        const featureItems = document.querySelectorAll('.feature-item');
+        const observer = new IntersectionObserver((entries) => {
+            entries.forEach(entry => {
+                if (entry.isIntersecting) {
+                    entry.target.style.opacity = 1;
+                    entry.target.style.transform = 'translateY(0)';
+                }
+            });
+        }, { threshold: 0.5 });
+
+        featureItems.forEach(item => {
+            item.style.opacity = 0;
+            item.style.transform = 'translateY(20px)';
+            item.style.transition = 'opacity 0.5s ease, transform 0.5s ease';
+            observer.observe(item);
+        });
+    </script>
+</body>
+</html>

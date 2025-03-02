@@ -1,0 +1,21 @@
+{% extends 'base.html' %}
+{% block title %}Profile{% endblock %}
+
+{% block content %}
+<div class="container">
+    <div class="profile-card">
+        {% if user.profile.profile_picture %}
+            <img src="{{ user.profile.profile_picture.url }}" alt="Profile Picture" class="profile-picture">
+        {% else %}
+            <img src="/static/images/default-profile.png" alt="Default Profile Picture" class="profile-picture">
+        {% endif %}
+        <h2>{{ user.username }}</h2>
+        <p><strong>Email:</strong> {{ user.email }}</p>
+        <p><strong>Bio:</strong> {{ user.profile.bio }}</p>
+        <p><strong>Location:</strong> {{ user.profile.location }}</p>
+        <p><strong>Interests:</strong> {{ user.profile.interests }}</p>
+        <p><strong>Career Goals:</strong> {{ user.profile.career_goals }}</p>
+        <a href="{% url 'profile_edit' %}" class="btn btn-primary">Edit Profile</a>
+    </div>
+</div>
+{% endblock %}

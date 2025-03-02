@@ -1,0 +1,145 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>{% block title %}SkillEdge{% endblock %}</title>
+    <link href="https://fonts.googleapis.com/css2?family=Inter:wght@300;400;500;600;700&display=swap" rel="stylesheet">
+    <script src="https://cdn.tailwindcss.com"></script>
+    <script src="https://cdn.jsdelivr.net/npm/chart.js"></script>
+    <script>
+        tailwind.config = {
+            theme: {
+                extend: {
+                    colors: {
+                        primary: {
+                            50: '#f0f9ff',
+                            100: '#e0f2fe',
+                            200: '#bae6fd',
+                            300: '#7dd3fc',
+                            400: '#38bdf8',
+                            500: '#0ea5e9',
+                            600: '#0284c7',
+                            700: '#0369a1',
+                            800: '#075985',
+                            900: '#0c4a6e',
+                            950: '#082f49',
+                        }
+                    },
+                    fontFamily: {
+                        sans: ['Inter', 'sans-serif'],
+                    },
+                }
+            }
+        }
+    </script>
+    {% block extra_css %}{% endblock %}
+</head>
+<body class="bg-gray-50 font-sans">
+    <div class="flex h-screen overflow-hidden">
+        <!-- Sidebar -->
+        <aside class="bg-primary-700 text-white w-64 flex-shrink-0 hidden md:block">
+            <div class="p-6">
+                <div class="text-2xl font-bold mb-8 text-center">
+                    <span class="mr-2">📚</span>SkillEdge
+                </div>
+                <nav>
+                    <ul class="space-y-2">
+                        <li>
+                            <a href="{% url 'Dashboard' %}" class="flex items-center px-4 py-3 rounded-lg hover:bg-primary-600 transition-colors duration-200">
+                                <span class="text-xl mr-3">🏠</span>
+                                <span>Dashboard</span>
+                            </a>
+                        </li>
+                        <li>
+                            <a href="{% url 'performance' %}" class="flex items-center px-4 py-3 rounded-lg hover:bg-primary-600 transition-colors duration-200">
+                                <span class="text-xl mr-3">📊</span>
+                                <span>Performance</span>
+                            </a>
+                        </li>
+                        <li>
+                            <a href="{% url 'recommendation_dashboard' %}" class="flex items-center px-4 py-3 rounded-lg hover:bg-primary-600 transition-colors duration-200">
+                                <span class="text-xl mr-3">🎯</span>
+                                <span>Recommendations</span>
+                            </a>
+                        </li>
+                        <li>
+                            <a href="{% url 'manage_performance' %}" class="flex items-center px-4 py-3 rounded-lg hover:bg-primary-600 transition-colors duration-200">
+                                <span class="text-xl mr-3">📑</span>
+                                <span>Your Marks</span>
+                            </a>
+                        </li>
+                    </ul>
+                </nav>
+            </div>
+        </aside>
+
+        <!-- Mobile sidebar -->
+        <div class="md:hidden bg-primary-700 text-white w-full p-4">
+            <div class="flex justify-between items-center">
+                <div class="text-xl font-bold">📚 SkillEdge</div>
+                <button id="mobileMenuButton" class="text-white focus:outline-none">
+                    <svg class="w-6 h-6" fill="none" stroke="currentColor" viewBox="0 0 24 24" xmlns="http://www.w3.org/2000/svg">
+                        <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M4 6h16M4 12h16M4 18h16"></path>
+                    </svg>
+                </button>
+            </div>
+            <nav id="mobileMenu" class="hidden mt-4">
+                <ul class="space-y-2">
+                    <li>
+                        <a href="{% url 'Dashboard' %}" class="flex items-center px-4 py-3 rounded-lg hover:bg-primary-600 transition-colors duration-200">
+                            <span class="text-xl mr-3">🏠</span>
+                            <span>Dashboard</span>
+                        </a>
+                    </li>
+                    <li>
+                        <a href="{% url 'performance' %}" class="flex items-center px-4 py-3 rounded-lg hover:bg-primary-600 transition-colors duration-200">
+                            <span class="text-xl mr-3">📊</span>
+                            <span>Performance</span>
+                        </a>
+                    </li>
+                    <li>
+                        <a href="{% url 'recommendation_dashboard' %}" class="flex items-center px-4 py-3 rounded-lg hover:bg-primary-600 transition-colors duration-200">
+                            <span class="text-xl mr-3">🎯</span>
+                            <span>Recommendations</span>
+                        </a>
+                    </li>
+                    <li>
+                        <a href="{% url 'manage_performance' %}" class="flex items-center px-4 py-3 rounded-lg hover:bg-primary-600 transition-colors duration-200">
+                            <span class="text-xl mr-3">📑</span>
+                            <span>Your Marks</span>
+                        </a>
+                    </li>
+                </ul>
+            </nav>
+        </div>
+
+        <!-- Main content -->
+        <main class="flex-1 overflow-y-auto bg-gray-50">
+            <div class="p-6">
+                <div class="flex justify-between items-center mb-8">
+                    <h1 class="text-2xl font-semibold text-gray-800">Welcome to SkillEdge</h1>
+                    <a href="{% url 'profile' %}" class="flex items-center space-x-3">
+                        <div class="w-10 h-10 rounded-full bg-primary-600 text-white flex items-center justify-center font-medium">
+                            {{user.username | slice:":1"}}
+                        </div>
+                    </a>
+                </div>
+                
+                <div class="bg-white rounded-xl shadow-sm p-6">
+                    {% block content %}{% endblock %}
+                </div>
+            </div>
+        </main>
+    </div>
+
+    <script>
+        // Mobile menu toggle
+        document.getElementById('mobileMenuButton').addEventListener('click', function() {
+            const menu = document.getElementById('mobileMenu');
+            menu.classList.toggle('hidden');
+        });
+    </script>
+    {% block extra_js %}{% endblock %}
+</body>
+</html>
