@@ -1,0 +1,79 @@
+{% extends 'base.html' %}
+
+{% block title %}ChatBot - SkillEdge{% endblock %}
+
+{% block content %}
+<div class="flex justify-center items-center h-full">
+    <div id="chat-container" class="bg-white p-6 rounded-lg shadow-md w-96">
+        <h2 class="text-xl font-bold mb-4 text-gray-700">ChatBot</h2>
+        <div id="chatbox" class="h-64 overflow-y-auto border border-gray-300 p-2 bg-gray-100 rounded">
+            <div class="bot p-2 bg-blue-100 rounded mb-2"><strong>Bot:</strong> Hi! How can I help you today?</div>
+        </div>
+        <div class="mt-4">
+            <input 
+                type="text" 
+                id="user-input" 
+                class="w-4/5 p-2 border rounded border-gray-300" 
+                placeholder="Type your message..." 
+                autocomplete="off"
+            />
+            <button 
+                onclick="sendMessage()" 
+                class="bg-primary-500 hover:bg-primary-600 text-white px-4 py-2 rounded"
+            >
+                Send
+            </button>
+        </div>
+    </div>
+</div>
+{% endblock %}
+
+{% block extra_js %}
+<script>
+    // Function to convert Markdown to basic HTML
+    function markdownToHtml(markdown) {
+        return markdown
+            .replace(/\*\*(.*?)\*\*/g, "<strong>$1</strong>") // Bold
+            .replace(/\*(.*?)\*/g, "<em>$1</em>") // Italics
+            .replace(/\n/g, "<br>"); // Line breaks
+    }
+
+    // Send message function
+    async function sendMessage() {
+        const userInput = document.getElementById("user-input");
+        const message = userInput.value.trim();
+        if (!message) return;
+
+        const chatbox = document.getElementById("chatbox");
+        chatbox.innerHTML += `<div class="user p-2 bg-green-100 text-right rounded mb-2"><strong>You:</strong> ${message}</div>`;
+        userInput.value = "";
+
+        try {
+            console.log("📡 Sending message:", message);
+
+            const response = await fetch("/chatbot/send/", {
+                method: "POST",
+                headers: {
+                    "Content-Type": "application/json"
+                },
+                body: JSON.stringify({ message })
+            });
+
+            const data = await response.json();
+            console.log("🔍 Server Response:", data);
+
+            if (data.reply) {
+                const formattedReply = markdownToHtml(data.reply);
+                chatbox.innerHTML += `<div class="bot p-2 bg-blue-100 rounded mb-2"><strong>Bot:</strong> ${formattedReply}</div>`;
+            } else {
+                chatbox.innerHTML += `<div class="bot p-2 bg-red-100 rounded mb-2"><strong>Bot:</strong> Error: ${data.error}</div>`;
+            }
+        } catch (error) {
+            console.error("🚨 Fetch Error:", error);
+            chatbox.innerHTML += `<div class="bot p-2 bg-red-100 rounded mb-2"><strong>Bot:</strong> Error connecting to server!</div>`;
+        }
+
+        chatbox.scrollTop = chatbox.scrollHeight;
+    }
+</script>
+{% endblock %}
