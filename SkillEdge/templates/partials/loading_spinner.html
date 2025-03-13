@@ -1,0 +1,32 @@
+<div id="globalLoadingOverlay" class="fixed inset-0 bg-gray-900 bg-opacity-50 z-50 flex items-center justify-center hidden">
+    <div class="bg-white p-5 rounded-lg shadow-xl flex flex-col items-center">
+        <div class="animate-spin rounded-full h-16 w-16 border-t-4 border-b-4 border-indigo-600 mb-4"></div>
+        <p id="loadingMessage" class="text-gray-700 text-lg font-medium">Loading...</p>
+        <p id="loadingSubMessage" class="text-gray-500 text-sm hidden"></p>
+    </div>
+</div>
+
+<script>
+    // Global functions to show/hide loading spinner
+    function showLoading(message = "Loading...", subMessage = "") {
+        const overlay = document.getElementById('globalLoadingOverlay');
+        const msgElement = document.getElementById('loadingMessage');
+        const subMsgElement = document.getElementById('loadingSubMessage');
+        
+        if (msgElement) msgElement.textContent = message;
+        
+        if (subMessage && subMsgElement) {
+            subMsgElement.textContent = subMessage;
+            subMsgElement.classList.remove('hidden');
+        } else if (subMsgElement) {
+            subMsgElement.classList.add('hidden');
+        }
+        
+        if (overlay) overlay.classList.remove('hidden');
+    }
+    
+    function hideLoading() {
+        const overlay = document.getElementById('globalLoadingOverlay');
+        if (overlay) overlay.classList.add('hidden');
+    }
+</script> 

@@ -10,6 +10,12 @@ For the full list of settings and their values, see
 https://docs.djangoproject.com/en/5.1/ref/settings/
 """
 
+import signal
+
+# Ignore broken pipe errors gracefully
+signal.signal(signal.SIGFPE, signal.SIG_DFL)
+
+
 from pathlib import Path
 from dotenv import load_dotenv
 import os
@@ -43,6 +49,8 @@ INSTALLED_APPS = [
     'Performance',
     'Recommendation',
     'ChatbotApp',
+    'CareerRoadmap',
+    'Community',
 ]
 
 MIDDLEWARE = [
@@ -68,6 +76,7 @@ TEMPLATES = [
                 'django.template.context_processors.request',
                 'django.contrib.auth.context_processors.auth',
                 'django.contrib.messages.context_processors.messages',
+                'Community.context_processors.unread_notifications',
             ],
         },
     },
@@ -131,4 +140,4 @@ MEDIA_ROOT = BASE_DIR / 'media'
 
 load_dotenv()
 
-GEMINI_API_KEY = os.getenv("GEMINI_API_KEY")
+GEMINI_API_KEY = os.environ.get('GEMINI_API_KEY', '')

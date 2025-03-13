@@ -1,86 +1,196 @@
 {% extends "base.html" %}
 
-{% block title %}Dashboard{% endblock %}
+{% block title %}Dashboard | SkillEdge{% endblock %}
 
-{% block extra_css %}
-<style>
-    .dashboard-section {
-        padding: 2rem;
-        margin-bottom: 2rem;
-        background-color: #f9f9f9;
-        border-radius: 10px;
-        box-shadow: 0 4px 6px rgba(0, 0, 0, 0.1);
-    }
-    .dashboard-section h2 {
-        font-size: 1.5rem;
-        color: #4a90e2;
-    }
-    .quick-actions button {
-        background-color: #4a90e2;
-        color: #fff;
-        padding: 0.5rem 1rem;
-        border: none;
-        border-radius: 5px;
-        cursor: pointer;
-    }
-    .quick-actions button:hover {
-        background-color: #3c7dc0;
-    }
-    .recommendations-list {
-        list-style: none;
-        padding: 0;
-    }
-    .recommendations-list li {
-        margin-bottom: 1rem;
-        padding: 1rem;
-        background-color: #ffffff;
-        border: 1px solid #e1e5e9;
-        border-radius: 5px;
-    }
-</style>
+{% block favicon %}
+<link rel="icon" href="data:image/svg+xml,<svg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 100 100'><text y='.9em' font-size='90'>🏠</text></svg>" type="image/svg+xml">
 {% endblock %}
 
-{% block content %}
-<div class="container">
-    <h1 class="greeting">Welcome back, <i><b>{{ user.username }}</b></i>!</h1>
+{% block greeting %}Dashboard Overview{% endblock %}
 
+{% block content %}
+<div class="p-6">
+    <!-- Welcome Banner -->
+    <div class="bg-gradient-to-r from-blue-600 to-indigo-700 rounded-xl shadow-lg mb-8 overflow-hidden">
+        <div class="px-6 py-5 md:flex items-center justify-between">
+            <div class="mb-4 md:mb-0">
+                <h2 class="text-xl font-bold text-white">Welcome back, {{ user.username }}!</h2>
+                <p class="text-blue-100 mt-1">Track your progress and improve your academic performance</p>
+            </div>
+            <div class="flex space-x-2">
+                <a href="{% url 'manage_performance' %}" class="inline-flex items-center px-4 py-2 border border-transparent text-sm font-medium rounded-md shadow-sm text-indigo-700 bg-white hover:bg-indigo-50 focus:outline-none focus:ring-2 focus:ring-offset-2 focus:ring-indigo-500 transition-colors duration-150">
+                    <svg xmlns="http://www.w3.org/2000/svg" class="h-4 w-4 mr-2" fill="none" viewBox="0 0 24 24" stroke="currentColor">
+                        <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M12 6v6m0 0v6m0-6h6m-6 0H6" />
+                    </svg>
+                    Add Data
+                </a>
+                <a href="{% url 'performance' %}" class="inline-flex items-center px-4 py-2 border border-transparent text-sm font-medium rounded-md shadow-sm text-white bg-indigo-600 bg-opacity-60 hover:bg-opacity-80 focus:outline-none focus:ring-2 focus:ring-offset-2 focus:ring-indigo-500 transition-colors duration-150">
+                    <svg xmlns="http://www.w3.org/2000/svg" class="h-4 w-4 mr-2" fill="none" viewBox="0 0 24 24" stroke="currentColor">
+                        <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M9 19v-6a2 2 0 00-2-2H5a2 2 0 00-2 2v6a2 2 0 002 2h2a2 2 0 002-2zm0 0V9a2 2 0 012-2h2a2 2 0 012 2v10m-6 0a2 2 0 002 2h2a2 2 0 002-2m0 0V5a2 2 0 012-2h2a2 2 0 012 2v14a2 2 0 01-2 2h-2a2 2 0 01-2-2z" />
+                    </svg>
+                    View Details
+                </a>
+            </div>
+        </div>
+    </div>
+
+    <div class="grid grid-cols-1 lg:grid-cols-3 gap-8">
     <!-- Performance Overview -->
-    <section class="dashboard-section">
-        <h2>Performance Overview</h2>
+        <div class="lg:col-span-2">
+            <div class="bg-white rounded-xl shadow-sm overflow-hidden h-full border border-gray-200">
+                <div class="bg-gray-50 px-4 py-3 border-b border-gray-200 flex justify-between items-center">
+                    <h3 class="text-base font-medium text-gray-900 flex items-center">
+                        <svg xmlns="http://www.w3.org/2000/svg" class="h-5 w-5 text-indigo-500 mr-2" fill="none" viewBox="0 0 24 24" stroke="currentColor">
+                            <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M9 19v-6a2 2 0 00-2-2H5a2 2 0 00-2 2v6a2 2 0 002 2h2a2 2 0 002-2zm0 0V9a2 2 0 012-2h2a2 2 0 012 2v10m-6 0a2 2 0 002 2h2a2 2 0 002-2m0 0V5a2 2 0 012-2h2a2 2 0 012 2v14a2 2 0 01-2 2h-2a2 2 0 01-2-2z" />
+                        </svg>
+                        Performance Overview
+                    </h3>
+                    <a href="{% url 'performance' %}" class="text-sm text-indigo-600 hover:text-indigo-900">View All</a>
+                </div>
+                
+                <div class="p-5">
         {% if semester_data %}
-        <div id="performanceChartContainer">
+                    <div id="performanceChartContainer" class="h-64">
             <canvas id="performanceOverviewChart"></canvas>
         </div>
         {% else %}
-        <p>No performance data available. Start by adding a semester.</p>
+                    <div class="flex flex-col items-center justify-center h-64 bg-gray-50 rounded-lg p-6 text-center">
+                        <svg xmlns="http://www.w3.org/2000/svg" class="h-12 w-12 text-gray-400 mb-3" fill="none" viewBox="0 0 24 24" stroke="currentColor">
+                            <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M9 12h6m-6 4h6m2 5H7a2 2 0 01-2-2V5a2 2 0 012-2h5.586a1 1 0 01.707.293l5.414 5.414a1 1 0 01.293.707V19a2 2 0 01-2 2z" />
+                        </svg>
+                        <p class="text-gray-600 mb-3">No performance data available yet</p>
+                        <a href="{% url 'manage_performance' %}" class="inline-flex items-center px-4 py-2 border border-transparent text-sm font-medium rounded-md shadow-sm text-white bg-indigo-600 hover:bg-indigo-700 focus:outline-none focus:ring-2 focus:ring-offset-2 focus:ring-indigo-500">
+                            <svg xmlns="http://www.w3.org/2000/svg" class="h-4 w-4 mr-2" fill="none" viewBox="0 0 24 24" stroke="currentColor">
+                                <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M12 6v6m0 0v6m0-6h6m-6 0H6" />
+                            </svg>
+                            Add a Semester
+                        </a>
+                    </div>
         {% endif %}
-    </section>
+                </div>
+            </div>
+        </div>
+        
+        <!-- Quick Actions -->
+        <div>
+            <div class="bg-white rounded-xl shadow-sm overflow-hidden border border-gray-200">
+                <div class="bg-gray-50 px-4 py-3 border-b border-gray-200">
+                    <h3 class="text-base font-medium text-gray-900 flex items-center">
+                        <svg xmlns="http://www.w3.org/2000/svg" class="h-5 w-5 text-indigo-500 mr-2" fill="none" viewBox="0 0 24 24" stroke="currentColor">
+                            <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M13 10V3L4 14h7v7l9-11h-7z" />
+                        </svg>
+                        Quick Actions
+                    </h3>
+                </div>
+                
+                <div class="p-5 space-y-3">
+                    <a href="{% url 'manage_performance' %}" class="w-full flex items-center justify-between p-3 bg-gray-50 hover:bg-indigo-50 rounded-lg group transition-colors duration-150">
+                        <div class="flex items-center">
+                            <span class="w-10 h-10 bg-indigo-100 text-indigo-600 rounded-lg flex items-center justify-center mr-3 group-hover:bg-indigo-200 transition-colors duration-150">
+                                <svg xmlns="http://www.w3.org/2000/svg" class="h-6 w-6" fill="none" viewBox="0 0 24 24" stroke="currentColor">
+                                    <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M12 6v6m0 0v6m0-6h6m-6 0H6" />
+                                </svg>
+                            </span>
+                            <div>
+                                <p class="font-medium text-gray-900">Add Semester</p>
+                                <p class="text-xs text-gray-500">Record your academic progress</p>
+                            </div>
+                        </div>
+                        <svg xmlns="http://www.w3.org/2000/svg" class="h-5 w-5 text-gray-400 group-hover:text-indigo-600" fill="none" viewBox="0 0 24 24" stroke="currentColor">
+                            <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M9 5l7 7-7 7" />
+                        </svg>
+                    </a>
+                    
+                    <a href="{% url 'performance' %}" class="w-full flex items-center justify-between p-3 bg-gray-50 hover:bg-indigo-50 rounded-lg group transition-colors duration-150">
+                        <div class="flex items-center">
+                            <span class="w-10 h-10 bg-indigo-100 text-indigo-600 rounded-lg flex items-center justify-center mr-3 group-hover:bg-indigo-200 transition-colors duration-150">
+                                <svg xmlns="http://www.w3.org/2000/svg" class="h-6 w-6" fill="none" viewBox="0 0 24 24" stroke="currentColor">
+                                    <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M9 19v-6a2 2 0 00-2-2H5a2 2 0 00-2 2v6a2 2 0 002 2h2a2 2 0 002-2zm0 0V9a2 2 0 012-2h2a2 2 0 012 2v10m-6 0a2 2 0 002 2h2a2 2 0 002-2m0 0V5a2 2 0 012-2h2a2 2 0 012 2v14a2 2 0 01-2 2h-2a2 2 0 01-2-2z" />
+                                </svg>
+                            </span>
+                            <div>
+                                <p class="font-medium text-gray-900">View Performance</p>
+                                <p class="text-xs text-gray-500">See detailed analytics</p>
+                            </div>
+                        </div>
+                        <svg xmlns="http://www.w3.org/2000/svg" class="h-5 w-5 text-gray-400 group-hover:text-indigo-600" fill="none" viewBox="0 0 24 24" stroke="currentColor">
+                            <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M9 5l7 7-7 7" />
+                        </svg>
+                    </a>
+                    
+                    <a href="{% url 'profile_edit' %}" class="w-full flex items-center justify-between p-3 bg-gray-50 hover:bg-indigo-50 rounded-lg group transition-colors duration-150">
+                        <div class="flex items-center">
+                            <span class="w-10 h-10 bg-indigo-100 text-indigo-600 rounded-lg flex items-center justify-center mr-3 group-hover:bg-indigo-200 transition-colors duration-150">
+                                <svg xmlns="http://www.w3.org/2000/svg" class="h-6 w-6" fill="none" viewBox="0 0 24 24" stroke="currentColor">
+                                    <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M11 5H6a2 2 0 00-2 2v11a2 2 0 002 2h11a2 2 0 002-2v-5m-1.414-9.414a2 2 0 112.828 2.828L11.828 15H9v-2.828l8.586-8.586z" />
+                                </svg>
+                            </span>
+                            <div>
+                                <p class="font-medium text-gray-900">Edit Profile</p>
+                                <p class="text-xs text-gray-500">Update your personal information</p>
+                            </div>
+                        </div>
+                        <svg xmlns="http://www.w3.org/2000/svg" class="h-5 w-5 text-gray-400 group-hover:text-indigo-600" fill="none" viewBox="0 0 24 24" stroke="currentColor">
+                            <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M9 5l7 7-7 7" />
+                        </svg>
+                    </a>
+                </div>
+            </div>
+        </div>
+    </div>
 
     <!-- Recommendations -->
-    <section class="dashboard-section">
-        <h2>Your Recommendations</h2>
+    <div class="mt-8">
+        <div class="bg-white rounded-xl shadow-sm overflow-hidden border border-gray-200">
+            <div class="bg-gray-50 px-4 py-3 border-b border-gray-200 flex justify-between items-center">
+                <h3 class="text-base font-medium text-gray-900 flex items-center">
+                    <svg xmlns="http://www.w3.org/2000/svg" class="h-5 w-5 text-indigo-500 mr-2" fill="none" viewBox="0 0 24 24" stroke="currentColor">
+                        <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M9.663 17h4.673M12 3v1m6.364 1.636l-.707.707M21 12h-1M4 12H3m3.343-5.657l-.707-.707m2.828 9.9a5 5 0 117.072 0l-.548.547A3.374 3.374 0 0014 18.469V19a2 2 0 11-4 0v-.531c0-.895-.356-1.754-.988-2.386l-.548-.547z" />
+                    </svg>
+                    Your Recommendations
+                </h3>
+                <a href="{% url 'recommendation_dashboard' %}" class="text-sm text-indigo-600 hover:text-indigo-900">View All</a>
+            </div>
+            
+            <div class="divide-y divide-gray-200">
         {% if recommendations %}
-        <ul class="recommendations-list">
-            {% for recommendation in recommendations %}
-            <li>
-                <strong>{{ recommendation.subject_name }}</strong><br>
-                Marks: {{ recommendation.marks }} / {{ recommendation.max_marks }}<br>
-                Suggestion: {{ recommendation.suggestion }}
-            </li>
+                    {% for recommendation in recommendations|slice:":3" %}
+                        <div class="p-5 hover:bg-gray-50 transition-colors duration-150">
+                            <div class="flex items-start">
+                                <div class="flex-shrink-0 mr-4">
+                                    <div class="w-10 h-10 rounded-full bg-indigo-100 flex items-center justify-center">
+                                        <svg xmlns="http://www.w3.org/2000/svg" class="h-6 w-6 text-indigo-600" fill="none" viewBox="0 0 24 24" stroke="currentColor">
+                                            <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M9.663 17h4.673M12 3v1m6.364 1.636l-.707.707M21 12h-1M4 12H3m3.343-5.657l-.707-.707m2.828 9.9a5 5 0 117.072 0l-.548.547A3.374 3.374 0 0014 18.469V19a2 2 0 11-4 0v-.531c0-.895-.356-1.754-.988-2.386l-.548-.547z" />
+                                        </svg>
+                                    </div>
+                                </div>
+                                <div>
+                                    <h4 class="text-base font-medium text-gray-900">{{ recommendation.subject_name }}</h4>
+                                    <div class="mt-1 text-sm">
+                                        <div class="flex items-center">
+                                            <div class="text-gray-900 font-medium">Marks: {{ recommendation.marks }} / {{ recommendation.max_marks }}</div>
+                                            <div class="ml-2 bg-gray-200 rounded-full h-2 w-16">
+                                                <div class="bg-indigo-600 h-2 rounded-full" style="width: {% widthratio recommendation.marks recommendation.max_marks 100 %}%;"></div>
+                                            </div>
+                                        </div>
+                                        <p class="mt-2 text-gray-600">{{ recommendation.suggestion }}</p>
+                                    </div>
+                                </div>
+                            </div>
+                        </div>
             {% endfor %}
-        </ul>
         {% else %}
-        <p>No recommendations available at the moment.</p>
+                    <div class="p-8 text-center">
+                        <svg xmlns="http://www.w3.org/2000/svg" class="h-12 w-12 text-gray-400 mx-auto mb-3" fill="none" viewBox="0 0 24 24" stroke="currentColor">
+                            <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M9.663 17h4.673M12 3v1m6.364 1.636l-.707.707M21 12h-1M4 12H3m3.343-5.657l-.707-.707m2.828 9.9a5 5 0 117.072 0l-.548.547A3.374 3.374 0 0014 18.469V19a2 2 0 11-4 0v-.531c0-.895-.356-1.754-.988-2.386l-.548-.547z" />
+                        </svg>
+                        <h3 class="text-lg font-medium text-gray-900 mb-1">No recommendations yet</h3>
+                        <p class="text-gray-500">Add more performance data to get personalized recommendations</p>
+                    </div>
         {% endif %}
-    </section>
-
-    <!-- Quick Actions -->
-    <section class="dashboard-section quick-actions">
-        <h2>Quick Actions</h2>
-        <button onclick="location.href='{% url 'manage_performance' %}'">Add Semester</button>
-        <button onclick="location.href='{% url 'performance' %}'">View Performance</button>
-        <button onclick="location.href='{% url 'profile_edit' %}'">Edit Profile</button>
-    </section>
+            </div>
+        </div>
+    </div>
 </div>
 {% endblock %}
 
@@ -97,9 +207,12 @@
                 datasets: [{
                     label: 'Average Marks (%)',
                     data: semesterData.map(data => data.avg_marks),
-                    backgroundColor: 'rgba(74, 144, 226, 0.2)',
-                    borderColor: '#4a90e2',
-                    borderWidth: 2
+                    backgroundColor: 'rgba(79, 70, 229, 0.1)',
+                    borderColor: 'rgba(79, 70, 229, 1)',
+                    borderWidth: 2,
+                    pointBackgroundColor: 'rgba(79, 70, 229, 1)',
+                    pointRadius: 4,
+                    tension: 0.3
                 }]
             },
             options: {
@@ -110,16 +223,60 @@
                         beginAtZero: true,
                         max: 100,
                         ticks: {
-                            stepSize: 10
+                            stepSize: 10,
+                            font: {
+                                size: 12
+                            }
+                        },
+                        grid: {
+                            color: 'rgba(243, 244, 246, 1)',
+                            borderDash: [5, 5]
+                        }
+                    },
+                    x: {
+                        grid: {
+                            display: false
+                        },
+                        ticks: {
+                            font: {
+                                size: 12
+                            }
                         }
                     }
+                },
+                plugins: {
+                    legend: {
+                        display: true,
+                        position: 'top',
+                        labels: {
+                            boxWidth: 12,
+                            font: {
+                                size: 12
+                            }
+                        }
+                    },
+                    tooltip: {
+                        backgroundColor: 'rgba(17, 24, 39, 0.8)',
+                        titleFont: {
+                            size: 14
+                        },
+                        bodyFont: {
+                            size: 13
+                        },
+                        padding: 10,
+                        displayColors: false
+                    }
+                },
+                animation: {
+                    duration: 1000,
+                    easing: 'easeOutQuart'
                 }
             }
         });
     }
 
     document.addEventListener('DOMContentLoaded', function() {
-        if (semesterData.length > 0) {
+        if (semesterData && semesterData.length > 0) {
             initPerformanceChart();
         }
     });

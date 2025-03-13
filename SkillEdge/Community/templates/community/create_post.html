@@ -1,0 +1,73 @@
+{% extends 'community/base.html' %}
+
+{% block title %}Create Post | Community{% endblock %}
+
+{% block community_content %}
+<div class="bg-white rounded-xl shadow-sm overflow-hidden">
+    <div class="bg-gradient-to-r from-indigo-600 to-purple-600 px-6 py-4">
+        <div class="flex justify-between items-start">
+            <h1 class="text-xl font-bold text-white">Create a New Post</h1>
+            <a href="{% url 'community_home' %}" class="text-white bg-indigo-500 bg-opacity-30 hover:bg-opacity-40 px-3 py-1 rounded-md text-sm flex items-center">
+                <svg xmlns="http://www.w3.org/2000/svg" class="h-4 w-4 mr-1" fill="none" viewBox="0 0 24 24" stroke="currentColor">
+                    <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M10 19l-7-7m0 0l7-7m-7 7h18" />
+                </svg>
+                Back to Posts
+            </a>
+        </div>
+    </div>
+    
+    <div class="p-6">
+        <form method="post" class="space-y-6">
+            {% csrf_token %}
+            
+            <!-- Title field -->
+            <div>
+                <label for="{{ form.title.id_for_label }}" class="block text-sm font-medium text-gray-700 mb-1">Title</label>
+                {{ form.title }}
+                {% if form.title.errors %}
+                <div class="mt-1 text-sm text-red-600">
+                    {% for error in form.title.errors %}
+                        <p>{{ error }}</p>
+                    {% endfor %}
+                </div>
+                {% endif %}
+                <p class="mt-1 text-sm text-gray-500">Be specific and imagine you're asking a question to another person</p>
+            </div>
+            
+            <!-- Topic field -->
+            <div>
+                <label for="{{ form.topic.id_for_label }}" class="block text-sm font-medium text-gray-700 mb-1">Topic</label>
+                {{ form.topic }}
+                {% if form.topic.errors %}
+                <div class="mt-1 text-sm text-red-600">
+                    {% for error in form.topic.errors %}
+                        <p>{{ error }}</p>
+                    {% endfor %}
+                </div>
+                {% endif %}
+                <p class="mt-1 text-sm text-gray-500">Select the topic that best fits your question</p>
+            </div>
+            
+            <!-- Content field -->
+            <div>
+                <label for="{{ form.content.id_for_label }}" class="block text-sm font-medium text-gray-700 mb-1">Content</label>
+                {{ form.content }}
+                {% if form.content.errors %}
+                <div class="mt-1 text-sm text-red-600">
+                    {% for error in form.content.errors %}
+                        <p>{{ error }}</p>
+                    {% endfor %}
+                </div>
+                {% endif %}
+                <p class="mt-1 text-sm text-gray-500">Include all the information someone would need to answer your question</p>
+            </div>
+            
+            <div class="flex justify-end pt-6 border-t border-gray-200">
+                <button type="submit" class="px-4 py-2 bg-indigo-600 text-white rounded-lg hover:bg-indigo-700 focus:outline-none focus:ring-2 focus:ring-indigo-500 focus:ring-offset-2">
+                    Post Question
+                </button>
+            </div>
+        </form>
+    </div>
+</div>
+{% endblock %} 

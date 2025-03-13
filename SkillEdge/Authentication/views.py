@@ -102,3 +102,22 @@ def profile_edit_view(request):
         'profile_form': profile_form
     }
     return render(request, 'edit_profile.html', context)
+
+@login_required
+def create_roadmap(request):
+    """View to generate a new roadmap using Gemini AI"""
+    # Check if the user has interests and career goals in their profile
+    user_profile = request.user.profile
+    
+    # Enhance the profile information with more context if needed
+    interests = user_profile.interests
+    if interests and len(interests.strip()) < 50:  # If too brief
+        messages.warning(request, "Please provide more detailed interests in your profile (at least 50 characters).")
+        return redirect('profile_edit')
+    
+    career_goals = user_profile.career_goals
+    if career_goals and len(career_goals.strip()) < 50:  # If too brief
+        messages.warning(request, "Please provide more detailed career goals in your profile (at least 50 characters).")
+        return redirect('profile_edit')
+    
+    # Rest of the view code remains the same...

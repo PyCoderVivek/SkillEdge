@@ -4,171 +4,221 @@
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <title>SkillEdge - Sign Up</title>
-    <link href="https://fonts.googleapis.com/css2?family=Poppins:wght@300;400;600&display=swap" rel="stylesheet">
-    <style>
-        * {
-            margin: 0;
-            padding: 0;
-            box-sizing: border-box;
+    
+    <!-- Signup page favicon -->
+    <link rel="icon" href="data:image/svg+xml,<svg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 100 100'><text y='.9em' font-size='90'>📝</text></svg>" type="image/svg+xml">
+    
+    <script src="https://cdn.tailwindcss.com"></script>
+    <link href="https://fonts.googleapis.com/css2?family=Inter:wght@300;400;500;600;700&display=swap" rel="stylesheet">
+    <script>
+        tailwind.config = {
+            theme: {
+                extend: {
+                    colors: {
+                        primary: {
+                            50: '#f5f3ff',
+                            100: '#ede9fe',
+                            200: '#ddd6fe',
+                            300: '#c4b5fd',
+                            400: '#a78bfa',
+                            500: '#8b5cf6',
+                            600: '#7c3aed',
+                            700: '#6d28d9',
+                            800: '#5b21b6',
+                            900: '#4c1d95',
+                        },
+                        secondary: {
+                            500: '#3b82f6',
+                            600: '#2563eb',
+                            700: '#1d4ed8',
+                        }
+                    },
+                    fontFamily: {
+                        sans: ['Inter', 'sans-serif'],
+                    },
+                }
+            }
         }
-        body {
-            font-family: 'Poppins', sans-serif;
-            background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
-            min-height: 100vh;
-            display: flex;
-            justify-content: center;
-            align-items: center;
-            padding: 20px;
-        }
-        .container {
-            background-color: rgba(255, 255, 255, 0.9);
-            border-radius: 20px;
-            box-shadow: 0 15px 35px rgba(0, 0, 0, 0.2);
-            overflow: hidden;
-            width: 400px;
-            max-width: 100%;
-            padding: 40px;
-            backdrop-filter: blur(10px);
-        }
-        .logo {
-            text-align: center;
-            margin-bottom: 30px;
-        }
-        .logo img {
-            width: 120px;
-            height: auto;
-            filter: drop-shadow(0 4px 6px rgba(0, 0, 0, 0.1));
-        }
-        h1 {
-            color: #333;
-            text-align: center;
-            margin-bottom: 30px;
-            font-weight: 600;
-            font-size: 28px;
-        }
-        .input-group {
-            position: relative;
-            margin-bottom: 25px;
-        }
-        input {
-            width: 100%;
-            padding: 12px 15px;
-            font-size: 16px;
-            border: none;
-            border-bottom: 2px solid #ddd;
-            background-color: transparent;
-            outline: none;
-            transition: all 0.3s ease;
-        }
-        input:focus {
-            border-bottom-color: #667eea;
-        }
-        label {
-            position: absolute;
-            top: 15px;
-            left: 0;
-            font-size: 16px;
-            color: #999;
-            transition: all 0.3s ease;
-            pointer-events: none;
-        }
-        input:focus + label,
-        input:not(:placeholder-shown) + label {
-            top: -20px;
-            font-size: 12px;
-            color: #667eea;
-        }
-        button {
-            background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
-            color: #fff;
-            border: none;
-            border-radius: 25px;
-            padding: 12px;
-            font-size: 16px;
-            cursor: pointer;
-            width: 100%;
-            transition: all 0.3s ease;
-            font-weight: 600;
-            margin-top: 20px;
-            box-shadow: 0 4px 6px rgba(0, 0, 0, 0.1);
-        }
-        button:hover {
-            transform: translateY(-3px);
-            box-shadow: 0 6px 8px rgba(0, 0, 0, 0.15);
-        }
-        .error {
-            color: #ff3860;
-            font-size: 12px;
-            margin-top: 5px;
-        }
-        .login-link {
-            text-align: center;
-            margin-top: 20px;
-            font-size: 14px;
-        }
-        .login-link a {
-            color: #667eea;
-            text-decoration: none;
-            font-weight: 600;
-        }
-        .login-link a:hover {
-            text-decoration: underline;
-        }
-        .educational-bg {
-            position: fixed;
-            top: 0;
-            left: 0;
-            width: 100%;
-            height: 100%;
-            z-index: -1;
-            opacity: 0.05;
-            background-image: url('data:image/svg+xml;utf8,<svg xmlns="http://www.w3.org/2000/svg" width="100" height="100" viewBox="0 0 100 100"><text x="50%" y="50%" font-size="80" text-anchor="middle" dy=".35em" font-family="Arial" fill="%23FFFFFF">📚</text></svg>');
-            background-repeat: repeat;
-        }
-    </style>
+    </script>
 </head>
-<body>
-    <div class="educational-bg"></div>
-    <div class="container">
-        <div class="logo">
-            <img src="https://skillsedge.co/wp-content/uploads/2023/03/skillsedge.png?height=120&width=120" alt="SkillEdge Logo">
+<body class="bg-gradient-to-br from-primary-600 to-secondary-700 min-h-screen flex items-center justify-center p-6 font-sans">
+    <!-- Background Pattern -->
+    <div class="fixed inset-0 z-0 opacity-5 pointer-events-none">
+        <div class="absolute inset-0" style="background-image: url('data:image/svg+xml;utf8,<svg xmlns=\'http://www.w3.org/2000/svg\' width=\'100\' height=\'100\' viewBox=\'0 0 100 100\'><text x=\'50%\' y=\'50%\' font-size=\'80\' text-anchor=\'middle\' dy=\'.35em\' font-family=\'Arial\' fill=\'%23FFFFFF\'>📚</text></svg>'); background-repeat: repeat;"></div>
+    </div>
+
+    <!-- Signup Card -->
+    <div class="w-full max-w-md relative z-10">
+        <!-- Glass Card Effect -->
+        <div class="bg-white bg-opacity-95 backdrop-filter backdrop-blur-sm rounded-2xl shadow-xl overflow-hidden">
+            <!-- Header with logo -->
+            <div class="pt-8 px-8 text-center">
+                <div class="flex justify-center mb-4">
+                    <div class="w-20 h-20 bg-gradient-to-br from-primary-600 to-secondary-600 rounded-full flex items-center justify-center shadow-lg">
+                        <span class="text-white text-3xl">📚</span>
+                    </div>
+                </div>
+                <h1 class="text-2xl font-bold text-gray-800 mb-2">Join SkillEdge</h1>
+                <p class="text-gray-500 mb-6">Create an account to get started</p>
         </div>
-        <h1>Join SkillEdge</h1>
-        <form id="signupForm" method="post">
+
+            <!-- Form -->
+            <div class="p-8 pt-4">
+                <form id="signupForm" method="post" class="space-y-5">
             {% csrf_token %}
-            <div class="input-group">
-                <input type="text" id="name" placeholder=" " name = "name" required>
-                <label for="name">Name</label>
-                <div id="nameError" class="error"></div>
+                    
+                    <!-- Name Input -->
+                    <div class="relative">
+                        <div class="group">
+                            <input 
+                                type="text" 
+                                id="name" 
+                                name="name" 
+                                required
+                                class="block w-full px-4 py-3 text-gray-700 bg-white border border-gray-200 rounded-lg focus:border-primary-500 focus:ring-2 focus:ring-primary-200 focus:outline-none peer transition-all duration-200"
+                                placeholder=" "
+                            />
+                            <label 
+                                for="name" 
+                                class="absolute text-sm text-gray-500 duration-300 transform -translate-y-6 scale-75 top-3 origin-[0] peer-placeholder-shown:scale-100 peer-placeholder-shown:translate-y-0 peer-focus:scale-75 peer-focus:-translate-y-6 peer-focus:text-primary-600 left-4"
+                            >
+                                Name
+                            </label>
+                        </div>
+                        <div id="nameError" class="mt-1 text-sm text-red-600"></div>
+                    </div>
+                    
+                    <!-- Username Input -->
+                    <div class="relative">
+                        <div class="group">
+                            <input 
+                                type="text" 
+                                id="username" 
+                                name="username" 
+                                required
+                                class="block w-full px-4 py-3 text-gray-700 bg-white border border-gray-200 rounded-lg focus:border-primary-500 focus:ring-2 focus:ring-primary-200 focus:outline-none peer transition-all duration-200"
+                                placeholder=" "
+                            />
+                            <label 
+                                for="username" 
+                                class="absolute text-sm text-gray-500 duration-300 transform -translate-y-6 scale-75 top-3 origin-[0] peer-placeholder-shown:scale-100 peer-placeholder-shown:translate-y-0 peer-focus:scale-75 peer-focus:-translate-y-6 peer-focus:text-primary-600 left-4"
+                            >
+                                Username
+                            </label>
+                        </div>
+                        <div id="usernameError" class="mt-1 text-sm text-red-600"></div>
+                    </div>
+                    
+                    <!-- Email Input -->
+                    <div class="relative">
+                        <div class="group">
+                            <input 
+                                type="email" 
+                                id="email" 
+                                name="email" 
+                                required
+                                class="block w-full px-4 py-3 text-gray-700 bg-white border border-gray-200 rounded-lg focus:border-primary-500 focus:ring-2 focus:ring-primary-200 focus:outline-none peer transition-all duration-200"
+                                placeholder=" "
+                            />
+                            <label 
+                                for="email" 
+                                class="absolute text-sm text-gray-500 duration-300 transform -translate-y-6 scale-75 top-3 origin-[0] peer-placeholder-shown:scale-100 peer-placeholder-shown:translate-y-0 peer-focus:scale-75 peer-focus:-translate-y-6 peer-focus:text-primary-600 left-4"
+                            >
+                                Email
+                            </label>
+                        </div>
+                        <div id="emailError" class="mt-1 text-sm text-red-600"></div>
             </div>
-            <div class="input-group">
-                <input type="text" id="username" placeholder=" " name = "username"  required>
-                <label for="username">Username</label>
-                <div id="usernameError" class="error"></div>
+                    
+                    <!-- Password Input -->
+                    <div class="relative">
+                        <div class="group">
+                            <input 
+                                type="password" 
+                                id="password" 
+                                name="password1" 
+                                required
+                                class="block w-full px-4 py-3 text-gray-700 bg-white border border-gray-200 rounded-lg focus:border-primary-500 focus:ring-2 focus:ring-primary-200 focus:outline-none peer transition-all duration-200"
+                                placeholder=" "
+                            />
+                            <label 
+                                for="password" 
+                                class="absolute text-sm text-gray-500 duration-300 transform -translate-y-6 scale-75 top-3 origin-[0] peer-placeholder-shown:scale-100 peer-placeholder-shown:translate-y-0 peer-focus:scale-75 peer-focus:-translate-y-6 peer-focus:text-primary-600 left-4"
+                            >
+                                Password
+                            </label>
             </div>
-            <div class="input-group">
-                <input type="email" id="email" placeholder=" " name = "email"  required>
-                <label for="email">Email</label>
-                <div id="emailError" class="error"></div>
+                        <div id="passwordError" class="mt-1 text-sm text-red-600"></div>
             </div>
-            <div class="input-group">
-                <input type="password" id="password" placeholder=" " name = "password1"  required>
-                <label for="password">Password</label>
-                <div id="passwordError" class="error"></div>
+                    
+                    <!-- Confirm Password Input -->
+                    <div class="relative">
+                        <div class="group">
+                            <input 
+                                type="password" 
+                                id="confirmPassword" 
+                                name="password2" 
+                                required
+                                class="block w-full px-4 py-3 text-gray-700 bg-white border border-gray-200 rounded-lg focus:border-primary-500 focus:ring-2 focus:ring-primary-200 focus:outline-none peer transition-all duration-200"
+                                placeholder=" "
+                            />
+                            <label 
+                                for="confirmPassword" 
+                                class="absolute text-sm text-gray-500 duration-300 transform -translate-y-6 scale-75 top-3 origin-[0] peer-placeholder-shown:scale-100 peer-placeholder-shown:translate-y-0 peer-focus:scale-75 peer-focus:-translate-y-6 peer-focus:text-primary-600 left-4"
+                            >
+                                Confirm Password
+                            </label>
             </div>
-            <div class="input-group">
-                <input type="password" id="confirmPassword" placeholder=" " name = "password2"  required>
-                <label for="confirmPassword">Confirm Password</label>
-                <div id="confirmPasswordError" class="error"></div>
+                        <div id="confirmPasswordError" class="mt-1 text-sm text-red-600"></div>
             </div>
+                    
+                    <!-- Error Message -->
             {% if error %}
-            <p style="color: red;">{{ error }}</p>
+                        <div class="mt-1 text-sm text-red-600">{{ error }}</div>
             {% endif %}
-            <button type="submit">Sign Up</button>
+                    
+                    <!-- Signup Button -->
+                    <button 
+                        type="submit" 
+                        class="w-full px-4 py-3 text-white font-medium bg-gradient-to-r from-primary-600 to-secondary-600 rounded-lg hover:from-primary-700 hover:to-secondary-700 focus:outline-none focus:ring-2 focus:ring-offset-2 focus:ring-primary-500 shadow-md hover:shadow-lg transition-all duration-200 transform hover:-translate-y-0.5"
+                    >
+                        Create Account
+                    </button>
+                    
+                    <!-- Login Link -->
+                    <div class="text-center mt-6">
+                        <p class="text-sm text-gray-600">
+                            Already have an account? 
+                            <a href="{% url 'Login' %}" class="font-medium text-primary-600 hover:text-primary-500 hover:underline">
+                                Sign in
+                            </a>
+                        </p>
+                    </div>
         </form>
-        <div class="login-link">
-            Already have an account? <a href={% url "Login" %}>Log in</a>
+            </div>
+        </div>
+        
+        <!-- Card Footer -->
+        <div class="text-center mt-6">
+            <p class="text-xs text-white text-opacity-80">
+                © 2023 SkillEdge. All rights reserved.
+            </p>
         </div>
     </div>
+
+    <script>
+        // Optional: Basic password matching validation
+        document.getElementById('confirmPassword').addEventListener('input', function() {
+            const password = document.getElementById('password').value;
+            const confirmPassword = this.value;
+            const errorElement = document.getElementById('confirmPasswordError');
+            
+            if (password !== confirmPassword) {
+                errorElement.textContent = 'Passwords do not match';
+            } else {
+                errorElement.textContent = '';
+            }
+        });
+    </script>
 </body>
 </html>

@@ -1,25 +1,174 @@
-<!-- recommendation/templates/recommendation/recommendations.html -->
-
 {% extends "base.html" %}
 
 {% block title %}AI Recommendations{% endblock %}
 
+{% block favicon %}
+<link rel="icon" href="data:image/svg+xml,<svg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 100 100'><text y='.9em' font-size='90'>💡</text></svg>" type="image/svg+xml">
+{% endblock %}
+
 {% block content %}
-    <div class="container">
-        <h2>Your Personalized Recommendations</h2>
+<!-- Loading Spinner Overlay -->
+<div id="loadingOverlay" class="fixed inset-0 bg-gray-900 bg-opacity-50 z-50 flex items-center justify-center hidden">
+    <div class="bg-white p-5 rounded-lg shadow-xl flex flex-col items-center">
+        <div class="animate-spin rounded-full h-16 w-16 border-t-4 border-b-4 border-indigo-600 mb-4"></div>
+        <p class="text-gray-700 text-lg font-medium mb-1">Refreshing Recommendations</p>
+        <p class="text-gray-500 text-sm">This may take a moment...</p>
+    </div>
+</div>
+
+<div class="bg-gray-50 min-h-screen py-8">
+    <div class="max-w-6xl mx-auto px-4 sm:px-6 lg:px-8">
+        <!-- Header Section -->
+        <div class="bg-gradient-to-r from-blue-600 to-indigo-700 rounded-xl shadow-lg mb-8">
+            <div class="px-6 py-5 flex justify-between items-center">
+                <div>
+                    <h1 class="text-2xl font-bold text-white">Your Personalized AI Recommendations</h1>
+                    <p class="text-blue-100 mt-1">Custom learning insights based on your performance</p>
+                </div>
+                <button id="refreshBtn" class="bg-white bg-opacity-20 hover:bg-opacity-30 text-white px-4 py-2 rounded-lg flex items-center transition-colors duration-200">
+                    <svg xmlns="http://www.w3.org/2000/svg" class="h-5 w-5 mr-2" fill="none" viewBox="0 0 24 24" stroke="currentColor">
+                        <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M4 4v5h.582m15.356 2A8.001 8.001 0 004.582 9m0 0H9m11 11v-5h-.581m0 0a8.003 8.003 0 01-15.357-2m15.357 2H15" />
+                    </svg>
+                    Refresh
+                </button>
+            </div>
+        </div>
 
         {% if recommendations %}
-            <ul class="list-group">
+            <div class="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-6">
                 {% for recommendation in recommendations %}
-                    <li class="list-group-item">
-                        <strong>{{ recommendation.subject_name }}</strong><br>
-                        Marks: {{ recommendation.marks }} / {{ recommendation.max_marks }}<br>
-                        Suggestion: {{ recommendation.suggestion }}
-                    </li>
+                    <div class="bg-white rounded-xl shadow-md overflow-hidden transition-all duration-300 hover:shadow-lg transform hover:-translate-y-1">
+                        <!-- Card Header -->
+                        <div class="bg-indigo-50 px-4 py-3 border-b border-gray-200">
+                            <div class="flex items-center">
+                                <svg xmlns="http://www.w3.org/2000/svg" class="h-5 w-5 text-indigo-600 mr-2" viewBox="0 0 20 20" fill="currentColor">
+                                    <path d="M10.394 2.08a1 1 0 00-.788 0l-7 3a1 1 0 000 1.84L5.25 8.051a.999.999 0 01.356-.257l4-1.714a1 1 0 11.788 1.838L7.667 9.088l1.94.831a1 1 0 00.787 0l7-3a1 1 0 000-1.838l-7-3zM3.31 9.397L5 10.12v4.102a8.969 8.969 0 00-1.05-.174 1 1 0 01-.89-.89 11.115 11.115 0 01.25-3.762zM9.3 16.573A9.026 9.026 0 007 14.935v-3.957l1.818.78a3 3 0 002.364 0l5.508-2.361a11.026 11.026 0 01.25 3.762 1 1 0 01-.89.89 8.968 8.968 0 00-5.35 2.524 1 1 0 01-1.4 0zM6 18a1 1 0 001-1v-2.065a8.935 8.935 0 00-2-.712V17a1 1 0 001 1z" />
+                                </svg>
+                                <h2 class="font-semibold text-indigo-800 truncate">{{ recommendation.subject_name }}</h2>
+                            </div>
+                        </div>
+                        
+                        <!-- Card Body -->
+                        <div class="p-5">
+                            <!-- Marks with Progress Bar -->
+                            <div class="mb-4">
+                                <div class="flex justify-between mb-1">
+                                    <span class="text-sm font-medium text-gray-700">Performance</span>
+                                    <span class="text-sm font-medium text-indigo-600">{{ recommendation.marks }} / {{ recommendation.max_marks }}</span>
+                                </div>
+                                <div class="w-full bg-gray-200 rounded-full h-2.5">
+                                    <div class="bg-indigo-600 h-2.5 rounded-full" 
+                                         style="width: {% widthratio recommendation.marks recommendation.max_marks 100 %}%;" 
+                                         id="progress-{{ forloop.counter }}"></div>
+                                </div>
+                            </div>
+                            
+                            <!-- Suggestion -->
+                            <div class="mb-4">
+                                <div class="flex items-center mb-2">
+                                    <svg xmlns="http://www.w3.org/2000/svg" class="h-5 w-5 text-amber-500 mr-2" viewBox="0 0 20 20" fill="currentColor">
+                                        <path fill-rule="evenodd" d="M18 10a8 8 0 11-16 0 8 8 0 0116 0zm-7-4a1 1 0 11-2 0 1 1 0 012 0zM9 9a1 1 0 000 2v3a1 1 0 001 1h1a1 1 0 100-2h-1V9z" clip-rule="evenodd" />
+                                    </svg>
+                                    <h3 class="text-sm font-semibold text-gray-700">Suggestion</h3>
+                                </div>
+                                <p class="text-gray-600 text-sm">{{ recommendation.suggestion }}</p>
+                            </div>
+                            
+                            <!-- Resources -->
+                        {% if recommendation.links %}
+                            <div>
+                                <div class="flex items-center mb-2">
+                                    <svg xmlns="http://www.w3.org/2000/svg" class="h-5 w-5 text-emerald-500 mr-2" viewBox="0 0 20 20" fill="currentColor">
+                                        <path fill-rule="evenodd" d="M12.586 4.586a2 2 0 112.828 2.828l-3 3a2 2 0 01-2.828 0 1 1 0 00-1.414 1.414 4 4 0 005.656 0l3-3a4 4 0 00-5.656-5.656l-1.5 1.5a1 1 0 101.414 1.414l1.5-1.5zm-5 5a2 2 0 012.828 0 1 1 0 101.414-1.414 4 4 0 00-5.656 0l-3 3a4 4 0 105.656 5.656l1.5-1.5a1 1 0 10-1.414-1.414l-1.5 1.5a2 2 0 11-2.828-2.828l3-3z" clip-rule="evenodd" />
+                                    </svg>
+                                    <h3 class="text-sm font-semibold text-gray-700">Key Resources ({{ recommendation.links|length }})</h3>
+                                </div>
+                                <ul class="space-y-3 mt-2">
+                                {% for link in recommendation.links %}
+                                    {% if link %}
+                                            <li class="bg-gray-50 rounded-lg p-2 border border-gray-200 hover:border-indigo-200 transition-colors duration-200">
+                                                <a href="{{ link|safe }}" 
+                                                   class="text-blue-600 hover:text-blue-800 hover:underline flex items-center text-sm" 
+                                                   target="_blank" 
+                                                   rel="noopener noreferrer">
+                                                    {% if 'youtube.com' in link or 'youtu.be' in link %}
+                                                        <svg class="h-4 w-4 mr-2 text-red-600" fill="currentColor" viewBox="0 0 24 24">
+                                                            <path d="M19.615 3.184c-3.604-.246-11.631-.245-15.23 0-3.897.266-4.356 2.62-4.385 8.816.029 6.185.484 8.549 4.385 8.816 3.6.245 11.626.246 15.23 0 3.897-.266 4.356-2.62 4.385-8.816-.029-6.185-.484-8.549-4.385-8.816zm-10.615 12.816v-8l8 3.993-8 4.007z"/>
+                                                        </svg>
+                                                        <span>YouTube Video</span>
+                                                    {% elif 'coursera.org' in link %}
+                                                        <svg class="h-4 w-4 mr-2 text-blue-600" fill="currentColor" viewBox="0 0 24 24">
+                                                            <path d="M12 0c-6.627 0-12 5.373-12 12s5.373 12 12 12 12-5.373 12-12-5.373-12-12-12zm-.5 4.5h1v5.25l4.5 2.67-.5.83-5-3v-5.75z"/>
+                                                        </svg>
+                                                        <span>Coursera Course</span>
+                                                    {% elif 'udemy.com' in link %}
+                                                        <svg class="h-4 w-4 mr-2 text-purple-600" fill="currentColor" viewBox="0 0 24 24">
+                                                            <path d="M12 0c-6.627 0-12 5.373-12 12s5.373 12 12 12 12-5.373 12-12-5.373-12-12-12zm-.5 4.5h1v5.25l4.5 2.67-.5.83-5-3v-5.75z"/>
+                                                        </svg>
+                                                        <span>Udemy Course</span>
+                                                    {% elif 'github.com' in link %}
+                                                        <svg class="h-4 w-4 mr-2 text-gray-800" fill="currentColor" viewBox="0 0 24 24">
+                                                            <path d="M12 0c-6.626 0-12 5.373-12 12 0 5.302 3.438 9.8 8.207 11.387.599.111.793-.261.793-.577v-2.234c-3.338.726-4.033-1.416-4.033-1.416-.546-1.387-1.333-1.756-1.333-1.756-1.089-.745.083-.729.083-.729 1.205.084 1.839 1.237 1.839 1.237 1.07 1.834 2.807 1.304 3.492.997.107-.775.418-1.305.762-1.604-2.665-.305-5.467-1.334-5.467-5.931 0-1.311.469-2.381 1.236-3.221-.124-.303-.535-1.524.117-3.176 0 0 1.008-.322 3.301 1.23.957-.266 1.983-.399 3.003-.404 1.02.005 2.047.138 3.006.404 2.291-1.552 3.297-1.23 3.297-1.23.653 1.653.242 2.874.118 3.176.77.84 1.235 1.911 1.235 3.221 0 4.609-2.807 5.624-5.479 5.921.43.372.823 1.102.823 2.222v3.293c0 .319.192.694.801.576 4.765-1.589 8.199-6.086 8.199-11.386 0-6.627-5.373-12-12-12z"/>
+                                                        </svg>
+                                                        <span>GitHub Repository</span>
+                                                    {% else %}
+                                                        <svg class="h-4 w-4 mr-2 text-green-600" fill="none" stroke="currentColor" viewBox="0 0 24 24" xmlns="http://www.w3.org/2000/svg">
+                                                            <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M9 12h6m-6 4h6m2 5H7a2 2 0 01-2-2V5a2 2 0 012-2h5.586a1 1 0 01.707.293l5.414 5.414a1 1 0 01.293.707V19a2 2 0 01-2 2z"></path>
+                                                        </svg>
+                                                        <span>Learning Resource</span>
+                                                    {% endif %}
+                                                </a>
+                                            </li>
+                                    {% endif %}
+                                {% endfor %}
+                            </ul>
+                            </div>
+                        {% endif %}
+                        </div>
+                    </div>
                 {% endfor %}
-            </ul>
+            </div>
         {% else %}
-            <p>No recommendations available.</p>
+            <div class="bg-white rounded-xl shadow-md overflow-hidden text-center p-8">
+                <svg xmlns="http://www.w3.org/2000/svg" class="h-16 w-16 text-green-500 mx-auto mb-4" fill="none" viewBox="0 0 24 24" stroke="currentColor">
+                    <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M9 12l2 2 4-4m6 2a9 9 0 11-18 0 9 9 0 0118 0z" />
+                </svg>
+                <h3 class="text-xl font-bold text-gray-800 mb-2">All Caught Up!</h3>
+                <p class="text-gray-600">No recommendations available. Keep up the good work!</p>
+            </div>
         {% endif %}
     </div>
+</div>
+
+<script>
+    // Add animation for progress bars
+    document.addEventListener('DOMContentLoaded', function() {
+        // Progress bar animation
+        const progressBars = document.querySelectorAll('[id^="progress-"]');
+        progressBars.forEach(progressBar => {
+            const originalWidth = progressBar.style.width;
+            progressBar.style.width = '0%';
+            progressBar.style.transition = 'width 1s ease-out';
+            
+            setTimeout(() => {
+                progressBar.style.width = originalWidth;
+            }, 300);
+        });
+        
+        // Add refresh functionality with loading spinner
+        const refreshBtn = document.getElementById('refreshBtn');
+        const loadingOverlay = document.getElementById('loadingOverlay');
+        
+        if (refreshBtn && loadingOverlay) {
+            refreshBtn.addEventListener('click', function() {
+                loadingOverlay.classList.remove('hidden');
+                
+                // Reload the page after a small delay to allow the spinner to show
+                setTimeout(() => {
+                    window.location.reload();
+                }, 500);
+            });
+        }
+    });
+</script>
 {% endblock %}

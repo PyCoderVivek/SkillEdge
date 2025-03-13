@@ -26,5 +26,7 @@ urlpatterns = [
     path('performance/', include('Performance.urls')),
     path('recommendation/', include('Recommendation.urls')), 
     path('chatbot/', include('ChatbotApp.urls')),
+    path('roadmap/', include('CareerRoadmap.urls')),
+    path('community/', include('Community.urls')),
 ]
 

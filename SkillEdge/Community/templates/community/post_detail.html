@@ -1,0 +1,205 @@
+{% extends 'community/base.html' %}
+
+{% block title %}{{ post.title }} | Community{% endblock %}
+
+{% block community_content %}
+<div class="bg-white rounded-xl shadow-sm overflow-hidden">
+    <!-- Post header -->
+    <div class="bg-gradient-to-r from-indigo-600 to-purple-600 px-6 py-4">
+        <div class="flex justify-between items-start">
+            <h1 class="text-xl font-bold text-white">{{ post.title }}</h1>
+            <a href="{% url 'community_home' %}" class="text-white bg-indigo-500 bg-opacity-30 hover:bg-opacity-40 px-3 py-1 rounded-md text-sm flex items-center">
+                <svg xmlns="http://www.w3.org/2000/svg" class="h-4 w-4 mr-1" fill="none" viewBox="0 0 24 24" stroke="currentColor">
+                    <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M10 19l-7-7m0 0l7-7m-7 7h18" />
+                </svg>
+                Back to Posts
+            </a>
+        </div>
+    </div>
+    
+    <!-- Post metadata -->
+    <div class="bg-gray-50 px-6 py-3 border-b border-gray-200 flex flex-wrap items-center justify-between gap-2">
+        <div class="flex items-center space-x-4">
+            <div class="flex items-center">
+                <a href="{% url 'community_profile' post.author.username %}" class="flex items-center hover:text-indigo-700">
+                    <div class="w-8 h-8 rounded-full bg-indigo-100 text-indigo-700 flex items-center justify-center font-medium text-sm mr-2">
+                        {{ post.author.username|slice:":1"|upper }}
+                    </div>
+                    <span class="text-sm font-medium">{{ post.author.username }}</span>
+                </a>
+            </div>
+            <span class="text-sm text-gray-500">Posted {{ post.created_at|timesince }} ago</span>
+            {% if post.topic %}
+            <a href="{% url 'community_home' %}?topic={{ post.topic.id }}" class="px-2 py-1 bg-indigo-50 text-indigo-700 rounded-full hover:bg-indigo-100 text-sm">
+                {{ post.topic.name }}
+            </a>
+            {% endif %}
+        </div>
+        <div class="flex items-center space-x-2 text-sm">
+            <span class="text-gray-500">{{ post.views }} views</span>
+            {% if post.is_solved %}
+            <span class="inline-flex items-center px-2.5 py-0.5 rounded-full text-xs font-medium bg-green-100 text-green-800">
+                Solved
+            </span>
+            {% endif %}
+        </div>
+    </div>
+    
+    <!-- Post content -->
+    <div class="p-6">
+        <div class="flex gap-6">
+            <!-- Voting -->
+            <div class="flex flex-col items-center">
+                {% if user.is_authenticated %}
+                <a href="{% url 'upvote_post' post.id %}" class="w-10 h-10 flex items-center justify-center rounded-full hover:bg-gray-100 text-gray-500 {% if user in post.upvotes.all %}text-indigo-600 bg-indigo-50{% endif %}">
+                    <svg xmlns="http://www.w3.org/2000/svg" class="h-6 w-6" fill="none" viewBox="0 0 24 24" stroke="currentColor">
+                        <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M5 15l7-7 7 7" />
+                    </svg>
+                </a>
+                {% endif %}
+                <span class="my-2 font-bold text-lg {% if post.upvote_count > 0 %}text-indigo-600{% endif %}">
+                    {{ post.upvote_count }}
+                </span>
+                {% if user.is_authenticated %}
+                <a href="{% url 'upvote_post' post.id %}" class="w-10 h-10 flex items-center justify-center rounded-full hover:bg-gray-100 text-gray-500 {% if user not in post.upvotes.all %}opacity-50{% endif %}">
+                    <svg xmlns="http://www.w3.org/2000/svg" class="h-6 w-6" fill="none" viewBox="0 0 24 24" stroke="currentColor">
+                        <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M19 9l-7 7-7-7" />
+                    </svg>
+                </a>
+                {% endif %}
+            </div>
+            
+            <!-- Content -->
+            <div class="flex-1 prose max-w-none">
+                {{ post.content|linebreaks }}
+            </div>
+        </div>
+    </div>
+</div>
+
+<!-- Comments/Answers section -->
+<div class="mt-6">
+    <div class="bg-white rounded-xl shadow-sm overflow-hidden">
+        <div class="bg-gray-50 px-6 py-3 border-b border-gray-200">
+            <h3 class="text-base font-medium text-gray-900">
+                {{ comments.count }} Answer{% if comments.count != 1 %}s{% endif %}
+            </h3>
+        </div>
+        
+        <div class="divide-y divide-gray-200">
+            {% for comment in comments %}
+            <div id="comment-{{ comment.id }}" class="p-6 {% if comment.is_solution %}bg-green-50 border-l-4 border-green-500{% endif %}">
+                <div class="flex gap-6">
+                    <!-- Voting -->
+                    <div class="flex flex-col items-center">
+                        {% if user.is_authenticated %}
+                        <a href="{% url 'upvote_comment' comment.id %}" class="w-10 h-10 flex items-center justify-center rounded-full hover:bg-gray-100 text-gray-500 {% if user in comment.upvotes.all %}text-indigo-600 bg-indigo-50{% endif %}">
+                            <svg xmlns="http://www.w3.org/2000/svg" class="h-6 w-6" fill="none" viewBox="0 0 24 24" stroke="currentColor">
+                                <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M5 15l7-7 7 7" />
+                            </svg>
+                        </a>
+                        {% endif %}
+                        <span class="my-2 font-bold text-lg {% if comment.upvote_count > 0 %}text-indigo-600{% endif %}">
+                            {{ comment.upvote_count }}
+                        </span>
+                        {% if user.is_authenticated %}
+                        <a href="{% url 'upvote_comment' comment.id %}" class="w-10 h-10 flex items-center justify-center rounded-full hover:bg-gray-100 text-gray-500 {% if user not in comment.upvotes.all %}opacity-50{% endif %}">
+                            <svg xmlns="http://www.w3.org/2000/svg" class="h-6 w-6" fill="none" viewBox="0 0 24 24" stroke="currentColor">
+                                <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M19 9l-7 7-7-7" />
+                            </svg>
+                        </a>
+                        {% endif %}
+                        
+                        {% if user.is_authenticated and user == post.author and not post.is_solved %}
+                        <a href="{% url 'mark_solution' comment.id %}" class="mt-2 text-green-600 hover:text-green-800 text-sm font-medium">
+                            <span class="flex flex-col items-center">
+                                <svg xmlns="http://www.w3.org/2000/svg" class="h-6 w-6" fill="none" viewBox="0 0 24 24" stroke="currentColor">
+                                    <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M9 12l2 2 4-4m6 2a9 9 0 11-18 0 9 9 0 0118 0z" />
+                                </svg>
+                                <span>Mark</span>
+                            </span>
+                        </a>
+                        {% endif %}
+                        
+                        {% if comment.is_solution %}
+                        <div class="mt-2 text-green-600 text-sm font-medium">
+                            <span class="flex flex-col items-center">
+                                <svg xmlns="http://www.w3.org/2000/svg" class="h-6 w-6" fill="none" viewBox="0 0 24 24" stroke="currentColor">
+                                    <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M9 12l2 2 4-4m6 2a9 9 0 11-18 0 9 9 0 0118 0z" />
+                                </svg>
+                                <span>Solution</span>
+                            </span>
+                        </div>
+                        {% endif %}
+                    </div>
+                    
+                    <!-- Content -->
+                    <div class="flex-1">
+                        <div class="prose max-w-none mb-4">
+                            {{ comment.content|linebreaks }}
+                        </div>
+                        <div class="flex justify-between items-center">
+                            <div class="text-sm text-gray-500">
+                                Answered {{ comment.created_at|timesince }} ago
+                            </div>
+                            <a href="{% url 'community_profile' comment.author.username %}" class="flex items-center hover:text-indigo-700">
+                                <div class="w-8 h-8 rounded-full bg-indigo-100 text-indigo-700 flex items-center justify-center font-medium text-sm mr-2">
+                                    {{ comment.author.username|slice:":1"|upper }}
+                                </div>
+                                <span class="text-sm font-medium">{{ comment.author.username }}</span>
+                            </a>
+                        </div>
+                    </div>
+                </div>
+            </div>
+            {% empty %}
+            <div class="p-8 text-center">
+                <svg xmlns="http://www.w3.org/2000/svg" class="h-12 w-12 text-gray-300 mx-auto mb-4" fill="none" viewBox="0 0 24 24" stroke="currentColor">
+                    <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M8 12h.01M12 12h.01M16 12h.01M21 12c0 4.418-4.03 8-9 8a9.863 9.863 0 01-4.255-.949L3 20l1.395-3.72C3.512 15.042 3 13.574 3 12c0-4.418 4.03-8 9-8s9 3.582 9 8z" />
+                </svg>
+                <h3 class="text-lg font-medium text-gray-900 mb-2">No answers yet</h3>
+                <p class="text-gray-500 mb-6">Be the first to answer this question!</p>
+            </div>
+            {% endfor %}
+        </div>
+    </div>
+</div>
+
+<!-- Post answer form -->
+{% if user.is_authenticated %}
+<div class="mt-6 bg-white rounded-xl shadow-sm overflow-hidden">
+    <div class="bg-gray-50 px-6 py-3 border-b border-gray-200">
+        <h3 class="text-base font-medium text-gray-900">Your Answer</h3>
+    </div>
+    <div class="p-6">
+        <form method="post" class="space-y-4">
+            {% csrf_token %}
+            <div>
+                {{ form.content }}
+                {% if form.content.errors %}
+                <div class="mt-1 text-sm text-red-600">
+                    {% for error in form.content.errors %}
+                        <p>{{ error }}</p>
+                    {% endfor %}
+                </div>
+                {% endif %}
+            </div>
+            <div class="flex justify-end">
+                <button type="submit" class="px-4 py-2 bg-indigo-600 text-white rounded-lg hover:bg-indigo-700 focus:outline-none focus:ring-2 focus:ring-indigo-500 focus:ring-offset-2">
+                    Post Answer
+                </button>
+            </div>
+        </form>
+    </div>
+</div>
+{% else %}
+<div class="mt-6 bg-white rounded-xl shadow-sm overflow-hidden border border-gray-200">
+    <div class="p-6 text-center">
+        <p class="text-gray-600 mb-4">Please log in to post an answer</p>
+        <a href="{% url 'Login' %}?next={{ request.path }}" class="inline-flex items-center px-4 py-2 border border-transparent text-sm font-medium rounded-md shadow-sm text-white bg-indigo-600 hover:bg-indigo-700">
+            Log in
+        </a>
+    </div>
+</div>
+{% endif %}
+{% endblock %} 
