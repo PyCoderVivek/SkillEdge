@@ -1,0 +1,7 @@
+Django>=5.1.4
+Pillow
+django-crispy-forms
+whitenoise
+gunicorn
+psycopg2-binary
+dj-database-url
